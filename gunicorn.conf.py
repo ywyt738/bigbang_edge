@@ -3,7 +3,7 @@ import logging.handlers
 
 bind = "127.0.0.1:8000"
 workers = 1
-chdir = "/usr/local/src/bigbang_edge"
+chdir = "/usr/local/src/bigbang/src"
 raw_env = ['DJANGO_PRODUCTION=True']
 accesslog = "/dev/null"
 
