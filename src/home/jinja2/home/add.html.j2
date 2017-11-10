@@ -1,0 +1,91 @@
+{% extends "nav.html.j2" %}
+{% set active_page = "hosts" %}
+
+{% block content_style %}
+<link rel="stylesheet" type="text/css" href="{{ static('admin/css/widgets.css') }}" />
+{% endblock %}
+
+{% block title %}
+  新建虚拟机
+{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <div class="row">
+      <div class="col-md-6 pull-left" style="padding-left: 0px;">
+        <h1>虚拟机详情</h1>
+      </div>
+    </div>
+    <fieldset id="form">
+      <form class="form-horizontal" method="post">
+        {{ csrf_input }}
+        <div class="form-group">
+          <label for="ip_address">IP地址:</label>
+          <input type="text" class="form-control" name="ip_address" required="">
+        </div>
+        <div class="form-group">
+          <label for="description">描述:</label>
+          <textarea class="form-control" rows="3" name="description" required=""></textarea>
+        </div>
+        <div class="row form-group">
+          <div class="col-md-4" style="padding-left: 0px;">
+            <label for="cpu">CPU(vCPU):</label><input type="text" class="form-control" name="cpu" required="">
+          </div>
+          <div class="col-md-4">
+            <label for="memory">Memory(G):</label><input type="text" class="form-control" name="memory" required="">
+          </div>
+          <div class="col-md-4" style="padding-right: 0px;">
+            <label for="storage">Storage(G):</label><input type="text" class="form-control" name="storage" required="">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <label for="start_time">开始日期:</label>
+            <input class="form-control vDateField" size="10" type="text" name="start_time" required="" style="width: 100.25px;display: contents;">
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="end_time">结束日期:</label>
+            <input class="form-control vDateField" size="10" type="text" id="et" name="end_time" required="" style="width: 100.25px;display: contents;">
+            <label><input type="checkbox" name="end_time" value="permanent" onclick="permanent()" id="etck" name="end_time">长期</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="use">用途:</label>
+          <textarea class="form-control" rows="3" name="use"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="maintainer">维护人:</label><input type="text" class="form-control" name="maintainer" required="">
+        </div>
+        <div class="form-group">
+          {{osc}}
+        </div>
+        <div class="form-group">
+          <div class="pull-right">
+            <a type="button" class="btn btn-warning" href="/hosts/">取消</a>
+            <button type="submit" class="btn btn-success">提交</button>
+          </div>
+        </div>
+      </form>
+    </fieldset>
+  </div>
+  <div class="col-md-4" style="background-color: #f5f5f5;">
+    <!-- 待用块 -->
+  </div>
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="{{ static('admin/js/core.js') }}"></script>
+<script type="text/javascript" src="{{ static('admin/js/vendor/jquery/jquery.js') }}"></script>
+<script type="text/javascript" src="{{ static('admin/js/jquery.init.js') }}"></script>
+<script type="text/javascript" src="{{ static('admin/js/calendar.js') }}"></script>
+<script type="text/javascript" src="{{ static('admin/js/admin/DateTimeShortcuts.js') }}"></script>
+<script type="text/javascript">window.__admin_media_prefix__ = "/admin_media/";</script>
+<script type="text/javascript">
+  function permanent (){
+    if (document.getElementById("etck").checked){
+      document.getElementById("et").setAttribute('disabled','disabled')
+      document.getElementById("et").value=""
+    }else{
+      document.getElementById("et").removeAttribute('disabled')
+    }
+  }
+</script>
+{% endblock %}

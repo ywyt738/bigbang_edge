@@ -1,0 +1,153 @@
+{% extends "nav.html.j2" %}
+{% set active_page = "ip_resources" %}
+
+{% block title %}
+IP资源
+{% endblock %}
+
+{% block content_style %}
+<link rel="stylesheet" type="text/css" href="{{ static('DataTables/DataTables-1.10.15/css/dataTables.bootstrap.min.css') }}">
+<style>
+.table > tbody > tr > td {
+  vertical-align: middle;
+}
+.table th {
+  background:#f6f8f8;
+  border-top:2px solid #2180F5 !important;
+}
+.fixed-table-toolbar .bs-bars, .fixed-table-toolbar .search {
+  line-height: 34px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  position: relative;
+}
+.dropdown-menu {
+  min-width: 100px;
+  text-align: center;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+{% if add_success == 'success' %}
+<div class="alert alert-success alert-dismissible fade in" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  新增成功
+</div>
+{% elif add_success == 'fail' %}
+<div class="alert alert-danger alert-dismissible fade in" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  该网段IP已有，请勿重复创建!
+</div>
+{% endif %}
+{% set tabs =[
+    ('/ip_resources/','ip_resources','IP资源'),
+    ('/ip_resources/add_network/','add_network','新增网段'),
+] -%}
+<!-- <ul class="nav nav-tabs" style="margin-bottom: 15px;">
+  {% for href, id, caption in tabs %}
+    <li role="presentation" {%if id == tab %} class="active"{% endif %}><a href="{{ href|e }}">{{ caption|e }}</a></li>
+  {% endfor %}
+</ul> -->
+{% if tab == 'ip_resources' %}
+<div class="script-table">
+  <div class="row">
+    <table class="table table-bordered table-hover" width="100%" id="ip_resources">
+      <thead>
+        <tr>
+          <th>IP</th>
+          <th>使用情况</th>
+          <th>用途</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+{% else %}
+<form class="form-inline" action="/ip_resources/add_network/" method="post">
+  {{ csrf_input }}
+  <div class="form-group">
+    <label for="network">网段</label>
+    <input type="text" class="form-control" placeholder="请输入网段" name="network" required="">
+  </div>
+  <div class="form-group">
+    <select class="form-control" name="netmask" required="">
+      <option value="/22">/22</option>
+      <option value="/23">/23</option>
+      <option value="/24" selected="">/24</option>
+      <option value="/25">/25</option>
+      <option value="/26">/26</option>
+      <option value="/27">/27</option>
+      <option value="/27">/28</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-default">新增</button>
+</form>
+{% endif %}
+{% endblock %}
+
+{% block custom_script %}
+<script type="text/javascript" src="{{ static('DataTables/DataTables-1.10.15/js/jquery.dataTables.min.js') }}"></script>
+<script type="text/javascript" src="{{ static('DataTables/DataTables-1.10.15/js/dataTables.bootstrap.min.js') }}"></script>
+<script type="text/javascript">
+$('#ip_resources').DataTable({
+  language: {
+    "sProcessing":   "处理中...",
+    "sLengthMenu":   "显示 _MENU_ 项结果",
+    "sZeroRecords":  "没有匹配结果",
+    "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+    "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+    "sInfoPostFix":  "",
+    "sSearch":       "搜索:",
+    "sUrl":          "",
+    "sEmptyTable":     "表中数据为空",
+    "sLoadingRecords": "载入中...",
+    "sInfoThousands":  ",",
+    "oPaginate": {
+        "sFirst":    "首页",
+        "sPrevious": "上页",
+        "sNext":     "下页",
+        "sLast":     "末页"
+    },
+    "oAria": {
+        "sSortAscending":  ": 以升序排列此列",
+        "sSortDescending": ": 以降序排列此列"
+    }
+  },
+  autoWidth: true,
+  lengthChange: true,
+  lengthMenu: [ [50, 100, 200, -1], [50, 100, 200, "所有"] ],
+  searching: true,
+  order: [[0, 'asc']],
+  paging: true,
+  info: true,
+  serverSide: true,
+  processing: true,
+  ajax: {
+    url: "/ip.json",
+  },
+  columns: [
+    { data: "ip_address" },
+    {
+      data: "available",
+      render: function(data, type, row, meta){
+        data = data || "";
+        if (data) {
+          return '<span class="label label-success">空闲</span>';
+        } else {
+          return '<span class="label label-danger">在用</span>';
+        }
+      }
+    },
+    { data: "host_info__description" },
+  ],
+  columnDefs: [
+    { name: "bin_ip", width: "5%", targets:0},
+    { name: "available", width: "5%", targets:1},
+    { name: "use", width: "40%", targets:2},
+  ],
+});
+</script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "accounts/auth_base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}{{ block.super }}登录{% endblock %}
+
+{% block form_heading %}请登录{% endblock %}
+
+{% block form %}
+  {% crispy form %}
+
+  <div class="form-message">
+    <p>
+      还没有注册? <a href="{% url 'accounts:signup' %}">注册</a>.
+    </p>
+  </div>
+{% endblock form %}
+

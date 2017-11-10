@@ -1,0 +1,20 @@
+<li {% if active_link == "home" %}class="active"{% endif %}><a href="{% url 'home' %}">首页</a></li>
+<li class="{% if active_link == "resources" %}active{% endif %} dropdown">
+  <a href="{% url 'resources' %}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">基础设施资源
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu">
+    <li>
+      <a href="{% url 'resources' %}">概览</a>
+    </li>
+    <li role="separator" class="divider"></li>
+    <li>
+      <a href="{% url 'hosts' %}">虚拟机资源</a>
+    </li>
+    <li>
+      <a href="{% url 'ip_resources' %}">IP资源</a>
+    </li>
+  </ul>
+</li>
+<li {% if active_link == "about" %}class="active"{% endif %}><a href="{% url 'about' %}">关于</a></li>
+

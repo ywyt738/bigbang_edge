@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}{{ block.super }}虚拟机详情{% endblock %}
+
+{% block navbar-left %}
+  {% include "_navbar.html" with active_link="resources" %}
+{% endblock %}
+
+{% block styles %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/calendar.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/admin/DateTimeShortcuts.js' %}"></script>
+<script type="text/javascript">window.__admin_media_prefix__ = "/admin_media/";</script>
+{% endblock %}
+
+{% block container %}
+<div class="row">
+  <div class="col-md-8">
+    <div class="row">
+      <div class="col-md-6 pull-left" style="padding-left: 0px;">
+        <h1>虚拟机详情</h1>
+      </div>
+      <div class="col-md-6" style="padding-right: 0px;">
+        <div class="pull-right">
+          <div class="switch">
+            <h1><input type="checkbox" name="edit_checkbox" data-on-text="查看" data-off-text="编辑" data-off-color="danger" {% if status == "detail" %}checked{% endif %} /></h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <fieldset id="form"{% if status == "detail" %} disabled{% endif %}>
+      <form class="form-horizontal" id="host_info_form" action="" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="ip_address">IP地址:</label>
+          <input type="text" class="form-control" id="ip_address" value="{{ host_detail.ip_address }}">
+        </div>
+        <div class="form-group">
+          <label for="description">描述:</label>
+          <textarea class="form-control" rows="3">{{ host_detail.description }}</textarea>
+        </div>
+        <div class="row form-group">
+          <div class="col-md-4" style="padding-left: 0px;">
+            <label for="cpu">CPU(vCPU):</label><input type="text" class="form-control" id="cpu" value="{{ host_detail.cpu }}">
+          </div>
+          <div class="col-md-4">
+            <label for="memory">Memory(G):</label><input type="text" class="form-control" id="memory" value="{{ host_detail.memory }}">
+          </div>
+          <div class="col-md-4" style="padding-right: 0px;">
+            <label for="storage">Storage(G):</label><input type="text" class="form-control" id="storage" value="{{ host_detail.storage }}">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <label for="start_time">开始日期:</label>
+            <input class="form-control vDateField" size="10" type="text" value="{{ host_detail.start_time }}" style="width: 100.25px;display: contents;">
+          </div>
+          <div class="col-md-6 form-group">
+            <label for="end_time">结束日期:</label>
+            <input class="form-control vDateField" size="10" type="text" value="{{ host_detail.end_time }}" style="width: 100.25px;display: contents;">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="use">用途:</label>
+          <textarea class="form-control" rows="3">{{ host_detail.use }}</textarea>
+        </div>
+        <div class="form-group">
+          <label for="maintainer">维护人:</label><input type="text" class="form-control" value="{{ host_detail.maintainer }}">
+        </div>
+        <div class="form-group">
+          {{osc}}
+        </div>
+        <div class="form-group">
+          <div class="pull-left">
+            <button type="button" class="btn btn-danger" name="delete" data-toggle="modal" data-target="#myModal">删除</button>
+          </div>
+          <div class="pull-right">
+            <button type="button" class="btn btn-warning" name="cancel">取消</button>
+            <button type="button" class="btn btn-success" name="submit">提交</button>
+          </div>
+        </div>
+      </form>
+    </fieldset>
+  </div>
+  <!-- <div class="col-md-4">
+    <h1>历史记录</h1>
+  </div> -->
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"><strong>删除确认</strong></h4>
+      </div>
+      <div class="modal-body">
+        <p>是否确认删除该设备？</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-danger">确认</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'bootstrap-switch/dist/js/bootstrap-switch.min.js' %}"></script>
+<script type="text/javascript">
+  $("[name='edit_checkbox']").bootstrapSwitch();
+  $('input[name="edit_checkbox"]').on('switchChange.bootstrapSwitch', function(event, state) {
+  if (state) {
+    $("#form").attr("disabled",true)
+  }
+  else {
+    $("#form").attr("disabled",false)
+  }
+});
+</script>
+{% endblock %}
