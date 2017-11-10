@@ -52,6 +52,7 @@ THIRD_PARTY_APPS = [
     'easy_thumbnails',
     'easy_select2',
     'django_extensions',
+    'opbeat.contrib.django',
 ]
 
 # Apps specific for this project go here.
@@ -68,6 +69,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # MIDDLEWARE CONFIGURATION
 # ------------------------------------------------------------------------------
 MIDDLEWARE = [
+    'opbeat.contrib.django.middleware.OpbeatAPMMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -195,3 +197,9 @@ LOGIN_REDIRECT_URL = reverse_lazy("profiles:show_self")
 LOGIN_URL = reverse_lazy("accounts:login")
 
 THUMBNAIL_EXTENSION = 'png'     # Or any extn for your thumbnails
+
+OPBEAT = {
+    'ORGANIZATION_ID': 'cab92ecfaf3a4547a9e2732a69cb3668',
+    'APP_ID': '06412ea525',
+    'SECRET_TOKEN': '093af991224356e93a472f2ed10e9a33945e2a61',
+}
