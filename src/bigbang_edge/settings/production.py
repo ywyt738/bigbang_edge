@@ -10,7 +10,7 @@ from .base import *  # noqa
 from os.path import join
 
 # DEBUG
-DEBUG = env('DEBUG')
+DEBUG = env.bool('DEBUG')
 
 # SECRET CONFIGURATION
 # ------------------------------------------------------------------------------
