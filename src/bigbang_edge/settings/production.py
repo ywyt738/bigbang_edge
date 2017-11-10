@@ -7,7 +7,7 @@ Production Configurations
 
 import logging.config
 from .base import *  # noqa
-from os.path import join
+from os.path import join, dirname
 
 # DEBUG
 DEBUG = env.bool('DEBUG')
