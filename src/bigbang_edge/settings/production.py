@@ -39,8 +39,13 @@ ANYMAIL = {
     'MAILGUN_API_KEY': 'key-1c90d68f80a6e1fbb253da406177195d',
     'MAILGUN_SENDER_DOMAIN': 'sandbox44260bbadbe84eb5a9edee66bf9c310b.mailgun.org'
 }
-EMAIL_BACKEND = 'anymail.backends.mailgun.EmailBackend'
-
+# EMAIL_BACKEND = 'anymail.backends.mailgun.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = False
+EMAIL_HOST = 'smtp-ent.21cn.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'huangxj@ideal.sh.cn'
+EMAIL_HOST_PASSWORD = 'ywyt135141!'
 # DATABASE CONFIGURATION
 # ------------------------------------------------------------------------------
 DATABASES['default'] = env.db('DATABASE_URL')
