@@ -18,10 +18,10 @@ def sendmail():
             send_templated_mail(
                 template_name='host',
                 from_email='产品创新部运维管理系统 <huangxj@ideal.sh.cn>',
-                recipient_list=['to@example.com'],
+                recipient_list=[i.host.maintainer.email],
                 context={
                     'left_day': left_msg,
-                    'username': i.host.maintainer,
+                    'username': i.host.maintainer.name,
                     'ip': i.host.ip_address.ip_address,
                     'description': i.host.description,
                     'cpu': i.host.cpu,
@@ -31,7 +31,7 @@ def sendmail():
                     'deadline': i.host.deadline,
                     'location': i.host.location
                 },
-                cc=['cc@example.com'],
+                cc=['liuyj2016@ideal.sh.cn'],
             )
             i.is_sent = True
             i.save()

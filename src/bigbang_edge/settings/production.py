@@ -39,7 +39,7 @@ ANYMAIL = {
     'MAILGUN_API_KEY': 'key-1c90d68f80a6e1fbb253da406177195d',
     'MAILGUN_SENDER_DOMAIN': 'sandbox44260bbadbe84eb5a9edee66bf9c310b.mailgun.org'
 }
-EMAIL_BACKEND = 'anymail.backends.mailgun.MailgunBackend'
+EMAIL_BACKEND = 'anymail.backends.mailgun.EmailBackend'
 
 # DATABASE CONFIGURATION
 # ------------------------------------------------------------------------------
