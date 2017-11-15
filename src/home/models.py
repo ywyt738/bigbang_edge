@@ -1,7 +1,7 @@
 from django.db import models
 import uuid
 import django.utils.timezone
-
+from authtools.models import User
 
 class Host_info(models.Model):
 
@@ -30,7 +30,7 @@ class Host_info(models.Model):
     # 用途(以后待用)
     use = models.TextField(blank=True)
     # 维护人员
-    maintainer = models.CharField(verbose_name='维护人/组', max_length=30)
+    maintainer = models.ForeignKey(User, verbose_name='维护人/组')
     # 机房
     LOCATION_CHOICES = (('理想公司测试机房', '理想公司测试机房'), ('生产机房', '生产机房'))
     location = models.CharField(
@@ -82,3 +82,26 @@ class IP_Resource(models.Model):
 
     def __str__(self):
         return self.ip_address
+
+
+class Mail(models.Model):
+    host = models.ForeignKey('Host_info',
+                             verbose_name='主机',
+                             on_delete=models.CASCADE)
+    send_date = models.DateField(verbose_name='下一次发送日期')
+    is_sent = models.BooleanField(verbose_name='是否发送', default=False)
+
+    def __str__(self):
+        return '[{0}]{1}'.format(self.host.ip_address.ip_address,
+                                 str(self.host.description))
+
+
+class SentHistory(models.Model):
+    id = models.AutoField(primary_key=True)
+    host = models.ForeignKey('Host_info',
+                                verbose_name='主机',
+                                on_delete=models.CASCADE)
+    sent_date = models.DateField(verbose_name='发送日期', auto_now_add=True)
+
+    def __str__(self):
+        return self.host.ip_address.ip_address
