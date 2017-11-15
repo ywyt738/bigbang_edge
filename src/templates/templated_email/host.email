@@ -1,0 +1,19 @@
+{% block subject %}[虚拟机到期提醒]您申请的虚拟机即将到期！{% endblock %}
+{% block plain %}
+Hi {{ username }},
+
+  您有一台虚拟机{{ left_day }}即将到期，设备信息如下:
+      IP: {{ ip }}
+      Description: {{ description }}
+      CPU: {{ cpu }}
+      内存: {{ memory }}
+      硬盘: {{ disk }}
+      申请日期: {{ start_time }}
+      到期日期: {{ deadline }}
+      所属机房: {{ location }}
+
+谢谢！
+虚拟机申请（延期）表: http://172.31.27.112/ywyt738/idealtools/blob/master/%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%94%B3%E8%AF%B7%E8%A1%A8.xlsx
+
+此邮件提醒功能目前正在测试中，如有误报请联系产品创新部——黄晓俊(huangxj@ideal.sh.cn)
+{% endblock %}

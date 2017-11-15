@@ -27,19 +27,19 @@ ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['*'])
 
 # EMAIL
 # ------------------------------------------------------------------------------
-# DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',
-#                          default='my_django <noreply@example.com>')
-# EMAIL_SUBJECT_PREFIX = env(
-#     'DJANGO_EMAIL_SUBJECT_PREFIX', default='[my_django]')
-# SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
+DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',
+                         default='产品创新部运维管理系统 <huangxj@ideal.sh.cn>')
+EMAIL_SUBJECT_PREFIX = env(
+    'DJANGO_EMAIL_SUBJECT_PREFIX', default='[测试]')
+SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 
 # Anymail with Mailgun
-# INSTALLED_APPS += ['anymail', ]
-# ANYMAIL = {
-#     'MAILGUN_API_KEY': env('DJANGO_MAILGUN_API_KEY'),
-#     'MAILGUN_SENDER_DOMAIN': env('MAILGUN_SENDER_DOMAIN')
-# }
-# EMAIL_BACKEND = 'anymail.backends.mailgun.MailgunBackend'
+INSTALLED_APPS += ['anymail', ]
+ANYMAIL = {
+    'MAILGUN_API_KEY': 'key-1c90d68f80a6e1fbb253da406177195d',
+    'MAILGUN_SENDER_DOMAIN': 'sandbox44260bbadbe84eb5a9edee66bf9c310b.mailgun.org'
+}
+EMAIL_BACKEND = 'anymail.backends.mailgun.MailgunBackend'
 
 # DATABASE CONFIGURATION
 # ------------------------------------------------------------------------------

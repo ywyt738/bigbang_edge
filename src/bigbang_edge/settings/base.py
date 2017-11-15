@@ -53,6 +53,7 @@ THIRD_PARTY_APPS = [
     'easy_select2',
     'django_extensions',
     'opbeat.contrib.django',
+    'djcelery',
 ]
 
 # Apps specific for this project go here.
@@ -203,3 +204,11 @@ OPBEAT = {
     'APP_ID': '06412ea525',
     'SECRET_TOKEN': '093af991224356e93a472f2ed10e9a33945e2a61',
 }
+
+# celery
+BROKER_URL = 'amqp://guest@localhost//'
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
+# 邮件模板
+TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django.TemplateBackend'

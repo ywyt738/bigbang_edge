@@ -1,8 +1,9 @@
 from django.contrib import admin
-from .models import Host_info, IP_Resource
+from .models import Host_info, IP_Resource, Mail, SentHistory
 from django.db.models import Q
 from easy_select2 import Select2
 from django import forms
+import datetime
 
 
 class HostInfoForm(forms.ModelForm):
@@ -11,13 +12,14 @@ class HostInfoForm(forms.ModelForm):
         model = Host_info
         widgets = {
             'ip_address': Select2(),
+            'maintainer': Select2(),
         }
         fields = '__all__'
 
 
 class Host_infoAdmin(admin.ModelAdmin):
     form = HostInfoForm
-    search_fields = ('ip_address__ip_address', 'maintainer', 'description')
+    search_fields = ('ip_address__ip_address', 'maintainer__name', 'description')
     list_filter = ('cpu', 'memory', 'storage', 'maintainer',
                    'os', 'location', 'is_permanent')
     list_display = ('ip_address',
@@ -50,12 +52,26 @@ class Host_infoAdmin(admin.ModelAdmin):
                 sip.save()
                 obj.ip_address.available = False
                 obj.ip_address.save()
+            if 'deadline' not in form.changed_data:    
+                Mail.objects.filter(host=obj).delete()
         else:
             obj.ip_address.available = False
             obj.ip_address.save()
         super(Host_infoAdmin, self).save_model(request, obj, form, change)
-
-            
+        # 发送邮件生成
+        if change:   # 修改到期信息
+            if obj.is_permanent:
+                Mail.objects.filter(host=obj).delete()
+            if 'deadline' in form.changed_data:
+                Mail.objects.filter(host=obj).delete()
+                Mail.objects.create(host=obj, send_date=obj.deadline)
+                Mail.objects.create(host=obj, send_date=obj.deadline - datetime.timedelta(days=3))
+                Mail.objects.create(host=obj, send_date=obj.deadline - datetime.timedelta(days=7))
+        else:    # 新增主机
+            if not obj.is_permanent:
+                Mail.objects.create(host=obj, send_date=obj.deadline)
+                Mail.objects.create(host=obj, send_date=obj.deadline - datetime.timedelta(days=3))
+                Mail.objects.create(host=obj, send_date=obj.deadline - datetime.timedelta(days=7))
 
     def delete_model(self, request, obj):
         obj.ip_address.available = True
@@ -82,6 +98,7 @@ def ip_use(obj):
 
 
 ip_use.short_description = '用途'
+admin.site.register(Host_info, Host_infoAdmin)
 
 
 class IP_ResourceAdmin(admin.ModelAdmin):
@@ -90,5 +107,18 @@ class IP_ResourceAdmin(admin.ModelAdmin):
     ordering = ('bin_ip', )
 
 
-admin.site.register(Host_info, Host_infoAdmin)
 admin.site.register(IP_Resource, IP_ResourceAdmin)
+
+
+class MailAdmin(admin.ModelAdmin):
+    list_display = ('host', 'send_date', 'is_sent')
+
+
+admin.site.register(Mail, MailAdmin)
+
+
+class SentHistoryAdmin(admin.ModelAdmin):
+    list_display = ('host', 'sent_date')
+
+
+admin.site.register(SentHistory, SentHistoryAdmin)
