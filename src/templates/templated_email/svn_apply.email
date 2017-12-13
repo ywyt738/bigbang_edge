@@ -1,0 +1,18 @@
+{% block subject %}SVN申请{% endblock %}
+{% block plain %}
+Hi 黄晓俊，刘叶静：
+
+　　{{ applier }}申请新开SVN库，信息如下：
+
+        项目中文名： {{ proj_name_chinese }}
+        项目英文名： {{ proj_name_english }}
+        项目经理： {{ pm }}
+        技术经理： {{ tm }}
+        开发人员： {{ dev }}
+        测试经理： {{ test_manager }}
+        测试人员： {{ test}}
+        项目性质： {{ proj_property }}
+        中心： {{ center }}
+        
+此邮件提醒功能目前正在测试中，如有错误请联系产品创新部——黄晓俊(huangxj@ideal.sh.cn)
+{% endblock %}

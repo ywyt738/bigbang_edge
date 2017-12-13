@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SVN列表</title>
+</head>
+<body>
+<h1>SVN列表</h1>
+{% if center1 %}
+<h3>开发交付一中心</h3>
+<ul>
+  {% for project in center1 %}
+  <li><a href="https://172.31.27.40/svn/{{ project.proj_name_english }}/project/DOC" target="_blank">{{ project.proj_name_chinese }}：https://172.31.27.40/svn/<strong>{{ project.proj_name_english }}</strong>/project/DOC</a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% if center2 %}
+<h3>开发交付二中心</h3>
+<ul>
+  {% for project in center2 %}
+  <li><a href="https://172.31.27.40/svn/{{ project.proj_name_english }}/project/DOC" target="_blank">{{ project.proj_name_chinese }}：https://172.31.27.40/svn/<strong>{{ project.proj_name_english }}</strong>/project/DOC</a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% if center3 %}
+<h3>技术创新中心</h3>
+<ul>
+  {% for project in center3 %}
+  <li><a href="https://172.31.27.40/svn/{{ project.proj_name_english }}/project/DOC" target="_blank">{{ project.proj_name_chinese }}：https://172.31.27.40/svn/<strong>{{ project.proj_name_english }}</strong>/project/DOC</a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% if center4 %}
+<h3>支撑拓展中心</h3>
+<ul>
+  {% for project in center4 %}
+  <li><a href="https://172.31.27.40/svn/{{ project.proj_name_english }}/project/DOC" target="_blank">{{ project.proj_name_chinese }}：https://172.31.27.40/svn/<strong>{{ project.proj_name_english }}</strong>/project/DOC</a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+</body>
+</html>

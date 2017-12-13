@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Host_info, IP_Resource, Mail, SentHistory
+from .models import Host_info, IP_Resource, Mail, SentHistory, Svn
 from django.db.models import Q
 from easy_select2 import Select2
 from django import forms
@@ -122,3 +122,11 @@ class SentHistoryAdmin(admin.ModelAdmin):
 
 
 admin.site.register(SentHistory, SentHistoryAdmin)
+
+
+class SvnAdmin(admin.ModelAdmin):
+    list_display = ('proj_name_chinese', 'proj_name_english', 'proj_property', 'apply_time', 'pm',
+                    'tm', 'dev', 'test_manager', 'test')
+
+
+admin.site.register(Svn, SvnAdmin)

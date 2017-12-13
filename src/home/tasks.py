@@ -36,3 +36,25 @@ def sendmail():
             i.is_sent = True
             i.save()
             SentHistory.objects.create(host=i.host)
+
+
+@shared_task
+def send_svn_apply_mail(svn, applier):
+    send_templated_mail(
+        template_name='svn_apply',
+        from_email='产品创新部运维管理系统 <huangxj@ideal.sh.cn>',
+        recipient_list=['huangxj@ideal.sh.cn', 'liuyj2016@ideal.sh.cn'],
+        context={
+            'applier': svn.applier,
+            'proj_name_chinese': svn.proj_name_chinese,
+            'proj_name_english': svn.proj_name_english,
+            'pm': svn.pm,
+            'tm': svn.tm,
+            'dev': svn.dev,
+            'test_manager': svn.test_manager,
+            'test': svn.test,
+            'proj_property': svn.proj_property,
+            'center': svn.center
+        },
+        cc=[applier.email],
+    )
