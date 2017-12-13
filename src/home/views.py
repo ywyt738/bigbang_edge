@@ -1,22 +1,20 @@
 from django.shortcuts import render, HttpResponse
-from django.shortcuts import Http404
-from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.http import HttpResponseNotFound
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from home.models import Host_info, IP_Resource
+from home.models import Host_info, IP_Resource, Svn
 from django.contrib import messages
 from django.contrib.admin import widgets
 from django import forms
 from django.forms import Select
 from django.shortcuts import get_object_or_404
 from django.core import serializers
-from django.utils.encoding import force_text
-from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
 import json
 
+from home.forms import SvnForm
+from authtools.models import User
+from .tasks import send_svn_apply_mail
 
 @login_required()
 def index(request):
@@ -241,3 +239,46 @@ def ipJson(request):
                              "recordsFiltered": recordsfiltered, "data": json.loads(result)}
     data = json.dumps(data_before_serialize)
     return HttpResponse(data, content_type='application/json')
+
+
+@login_required()
+def svn_apply(request):
+    form = SvnForm
+    if request.method == 'GET':
+        return render(request, 'home/svn_apply.html', {'form': form})
+    elif request.method == 'POST':
+        proj_name_chinese = request.POST['proj_name_chinese']
+        proj_name_english = request.POST['proj_name_english']
+        cname_prj = Svn.objects.filter(proj_name_chinese=proj_name_chinese)
+        ename_prj = Svn.objects.filter(proj_name_english=proj_name_english)
+        if cname_prj.exists():
+            messages.error(
+                request, """<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 项目中文名已存在。""")
+            return render(request, 'home/svn_apply.html', {'form': form})
+        elif ename_prj.exists():
+            messages.error(
+                request, """<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 项目英文名已存在。""")
+            return render(request, 'home/svn_apply.html', {'form': form})
+        center = request.POST['center']
+        pm = [User.objects.get(id=x).name for x in request.POST.getlist('pm')]
+        tm = [User.objects.get(id=x).name for x in request.POST.getlist('tm')]
+        dev = [User.objects.get(id=x).name for x in request.POST.getlist('dev')]
+        test_manager = [User.objects.get(id=x).name for x in request.POST.getlist('test_manager')]
+        test = [User.objects.get(id=x).name for x in request.POST.getlist('test')]
+        proj_property = request.POST['proj_property']
+        svn = Svn.objects.create(
+            applier=request.user.name,
+            proj_name_chinese=proj_name_chinese,
+            proj_name_english=proj_name_english,
+            proj_property=proj_property,
+            center=center,
+            pm=','.join(pm),
+            tm=','.join(tm),
+            dev=','.join(dev),
+            test_manager=','.join(test_manager),
+            test=','.join(test),
+        )
+        send_svn_apply_mail.delay(svn, request.user)
+        messages.success(request, """<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+  <strong>完成！</strong> 申请SVN成功，请等待实施人员开库。""")
+        return render(request, 'home/svn_apply.html', {'form': form})

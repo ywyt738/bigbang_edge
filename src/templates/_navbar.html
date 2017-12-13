@@ -16,5 +16,6 @@
     </li>
   </ul>
 </li>
+<li {% if active_link == "svn" %}class="active"{% endif %}><a href="{% url 'svn' %}">SVN</a></li>
 <li {% if active_link == "about" %}class="active"{% endif %}><a href="{% url 'about' %}">关于</a></li>
 

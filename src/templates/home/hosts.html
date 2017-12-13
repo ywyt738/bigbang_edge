@@ -4,8 +4,8 @@
 
 {% block title %}{{ block.super }}虚拟机资源{% endblock %}
 
-{% block navbar_left %}
-  {% include "_navbar.html" with active_link="about" %}
+{% block navbar-left %}
+  {% include "_navbar.html" with active_link="host" %}
 {% endblock %}
 
 {% block styles %}
@@ -41,10 +41,6 @@
   text-align: center;
 }
 </style>
-{% endblock %}
-
-{% block navbar-left %}
-  {% include "_navbar.html" with active_link="resources" %}
 {% endblock %}
 
 {% block container %}

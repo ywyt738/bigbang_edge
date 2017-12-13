@@ -2,6 +2,8 @@ from django.db import models
 import uuid
 import django.utils.timezone
 from authtools.models import User
+from django.urls import reverse
+
 
 class Host_info(models.Model):
 
@@ -99,9 +101,33 @@ class Mail(models.Model):
 class SentHistory(models.Model):
     id = models.AutoField(primary_key=True)
     host = models.ForeignKey('Host_info',
-                                verbose_name='主机',
-                                on_delete=models.CASCADE)
+                             verbose_name='主机',
+                             on_delete=models.CASCADE)
     sent_date = models.DateField(verbose_name='发送日期', auto_now_add=True)
 
     def __str__(self):
         return self.host.ip_address.ip_address
+
+
+class Svn(models.Model):
+    applier = models.CharField(verbose_name='申请人', max_length=100)
+    apply_time = models.DateTimeField(auto_now_add=True)
+    proj_name_chinese = models.CharField(verbose_name='项目中文名称', max_length=100)
+    proj_name_english = models.CharField(verbose_name='项目英文名称', max_length=100)
+    PROJ_PROPERTY = (('项目', '项目'), ('产品', '产品'))
+    pm = models.CharField(verbose_name='项目经理', max_length=50)
+    tm = models.CharField(verbose_name='技术经理', max_length=50)
+    dev = models.CharField(verbose_name='开发人员', max_length=300)
+    test_manager = models.CharField(verbose_name='测试经理', max_length=50)
+    test = models.CharField(verbose_name='测试人员', max_length=300, blank=True)
+    proj_property = models.CharField(verbose_name='项目性质', choices=PROJ_PROPERTY, max_length=30, default='project')
+    CENTER = (
+              ('开发交付一中心', '开发交付一中心'),
+              ('开发交付二中心', '开发交付二中心'),
+              ('技术创新中心', '技术创新中心'),
+              ('支撑拓展中心', '支撑拓展中心')
+             )
+    center = models.CharField(verbose_name='中心', choices=CENTER, max_length=50)
+
+    def __str__(self):
+        return '{0}[{1}]'.format(self.proj_name_chinese, self.proj_name_english)

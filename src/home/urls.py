@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'ip_resources/$', home_views.ip_resources, name='ip_resources'),
     url(r'ip_resources/add_network/$', home_views.ip_resources, name='add_network'),
     url(r'ip.json$', home_views.ipJson, name='IPJson'),
+    url(r'svn_add/$', home_views.svn_apply, name='svn'),
 ]
