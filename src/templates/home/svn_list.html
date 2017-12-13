@@ -12,7 +12,7 @@
 <h3>开发交付一中心</h3>
 <ul>
   {% for project in center1 %}
-  <li><a href="https://172.31.27.40/svn/{{ project.proj_name_english }}/project/DOC" target="_blank">{{ project.proj_name_chinese }}：https://172.31.27.40/svn/<strong>{{ project.proj_name_english }}</strong>/project/DOC</a></li>
+  <li><a href="https://172.31.27.40/svn/{{ project.proj_name_english }}/{% if project.proj_property == "项目" %}project{% else %}product{% endif %}/DOC" target="_blank">{{ project.proj_name_chinese }}：https://172.31.27.40/svn/<strong>{{ project.proj_name_english }}</strong>/{% if project.proj_property == "项目" %}project{% else %}product{% endif %}/DOC</a></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -20,7 +20,7 @@
 <h3>开发交付二中心</h3>
 <ul>
   {% for project in center2 %}
-  <li><a href="https://172.31.27.40/svn/{{ project.proj_name_english }}/project/DOC" target="_blank">{{ project.proj_name_chinese }}：https://172.31.27.40/svn/<strong>{{ project.proj_name_english }}</strong>/project/DOC</a></li>
+  <li><a href="https://172.31.27.40/svn/{{ project.proj_name_english }}/{% if project.proj_property == "项目" %}project{% else %}product{% endif %}/DOC" target="_blank">{{ project.proj_name_chinese }}：https://172.31.27.40/svn/<strong>{{ project.proj_name_english }}</strong>/{% if project.proj_property == "项目" %}project{% else %}product{% endif %}/DOC</a></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -28,7 +28,7 @@
 <h3>技术创新中心</h3>
 <ul>
   {% for project in center3 %}
-  <li><a href="https://172.31.27.40/svn/{{ project.proj_name_english }}/project/DOC" target="_blank">{{ project.proj_name_chinese }}：https://172.31.27.40/svn/<strong>{{ project.proj_name_english }}</strong>/project/DOC</a></li>
+  <li><a href="https://172.31.27.40/svn/{{ project.proj_name_english }}/{% if project.proj_property == "项目" %}project{% else %}product{% endif %}/DOC" target="_blank">{{ project.proj_name_chinese }}：https://172.31.27.40/svn/<strong>{{ project.proj_name_english }}</strong>/{% if project.proj_property == "项目" %}project{% else %}product{% endif %}/DOC</a></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -36,7 +36,7 @@
 <h3>支撑拓展中心</h3>
 <ul>
   {% for project in center4 %}
-  <li><a href="https://172.31.27.40/svn/{{ project.proj_name_english }}/project/DOC" target="_blank">{{ project.proj_name_chinese }}：https://172.31.27.40/svn/<strong>{{ project.proj_name_english }}</strong>/project/DOC</a></li>
+  <li><a href="https://172.31.27.40/svn/{{ project.proj_name_english }}/{% if project.proj_property == "项目" %}project{% else %}product{% endif %}/DOC" target="_blank">{{ project.proj_name_chinese }}：https://172.31.27.40/svn/<strong>{{ project.proj_name_english }}</strong>/{% if project.proj_property == "项目" %}project{% else %}product{% endif %}/DOC</a></li>
   {% endfor %}
 </ul>
 {% endif %}
