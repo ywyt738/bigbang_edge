@@ -7,6 +7,10 @@ from django.urls import reverse
 
 class Host_info(models.Model):
 
+    class Meta:
+        verbose_name = '主机(虚拟机)资源'
+        verbose_name_plural = '主机(虚拟机)资源'
+
     host_uuid = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
     modify_time = models.DateTimeField(
@@ -64,6 +68,8 @@ class Host_info(models.Model):
 class IP_Resource(models.Model):
 
     class Meta:
+        verbose_name = 'IP地址资源'
+        verbose_name_plural = 'IP地址资源'
         ordering = ['bin_ip']
 
     ip_address = models.GenericIPAddressField(
@@ -87,6 +93,11 @@ class IP_Resource(models.Model):
 
 
 class Mail(models.Model):
+
+    class Meta:
+        verbose_name = '主机到期邮件'
+        verbose_name_plural = '主机到期邮件'
+
     host = models.ForeignKey('Host_info',
                              verbose_name='主机',
                              on_delete=models.CASCADE)
@@ -99,6 +110,11 @@ class Mail(models.Model):
 
 
 class SentHistory(models.Model):
+
+    class Meta:
+        verbose_name = '已发主机到期邮件'
+        verbose_name_plural = '已发主机到期邮件'
+
     id = models.AutoField(primary_key=True)
     host = models.ForeignKey('Host_info',
                              verbose_name='主机',
@@ -110,6 +126,11 @@ class SentHistory(models.Model):
 
 
 class Svn(models.Model):
+
+    class Meta:
+        verbose_name = 'SVN'
+        verbose_name_plural = 'SVN'
+
     applier = models.CharField(verbose_name='申请人', max_length=100)
     apply_time = models.DateTimeField(auto_now_add=True)
     proj_name_chinese = models.CharField(verbose_name='项目中文名称', max_length=100)
