@@ -282,3 +282,15 @@ def svn_apply(request):
         messages.success(request, """<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
   <strong>完成！</strong> 申请SVN成功，请等待实施人员开库。""")
         return render(request, 'home/svn_apply.html', {'form': form})
+
+
+def svn_list(request):
+    projects = Svn.objects.all()
+    center1 = projects.filter(center='开发交付一中心')
+    center2 = projects.filter(center='开发交付二中心')
+    center3 = projects.filter(center='技术创新中心')
+    center4 = projects.filter(center='支撑拓展中心')
+    context = {'projects': projects,
+               'center1': center1, 'center2': center2, 'center3': center3,
+               'center4': center4}
+    return render(request, 'home/svn_list.html', context)
