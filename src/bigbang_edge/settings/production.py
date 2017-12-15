@@ -53,7 +53,7 @@ DATABASES['default'] = env.db('DATABASE_URL')
 
 # Your production stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
-STATIC_URL = '/static_big/'
+STATIC_URL = '/static/'
 
 # Log everything to the logs directory at the top
 LOGFILE_ROOT = join(dirname(BASE_DIR), 'logs')
