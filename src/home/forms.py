@@ -4,7 +4,7 @@ from easy_select2 import Select2Multiple
 from authtools.models import User
 from crispy_forms.layout import Layout, Field, Submit, Button
 from crispy_forms.helper import FormHelper
-from crispy_forms.bootstrap import FormActions
+from crispy_forms.bootstrap import FormActions, Alert
 from django.core.urlresolvers import reverse_lazy
 
 
@@ -39,11 +39,12 @@ class SvnForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SvnForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.attrs = {'id': 'myform'}
         self.helper.form_method = 'POST'
         self.helper.form_action = reverse_lazy('svn')
         self.helper.layout = Layout(
-            Field('proj_name_chinese', wrapper_class="col-md-6"),
-            Field('proj_name_english', wrapper_class="col-md-6"),
+            Field('proj_name_chinese'),
+            Field('proj_name_english'),
             Field('pm', wrapper_class="col-md-6"),
             Field('tm', wrapper_class="col-md-6"),
             Field('dev', wrapper_class="col-md-12"),
@@ -53,7 +54,5 @@ class SvnForm(forms.ModelForm):
             Field('center', wrapper_class="col-md-12"),
             FormActions(
                 Submit('submit', '提交'),
-                Button('cancle', '取消'),
-                css_class="col-md-12"
-            )
-        )
+                Button('reset', '重置'),
+                css_class="col-md-12"))
