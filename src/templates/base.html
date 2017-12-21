@@ -16,6 +16,8 @@
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
     <!-- bootstrap 主题文件 -->
     <link href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}" rel="stylesheet">
+    <!-- FormValidation CSS file -->
+    <link rel="stylesheet" href="{% static 'formvalidation/css/formValidation.min.css'%}">
     <!-- Custom styles for this site -->
     {% block styles %}
     <link href="{% static 'site/css/main.css' %}" rel="stylesheet">
@@ -74,7 +76,6 @@
                 </li>
               {% endif %}
             {% endblock %}
-          </ul>
           </ul>
         </div><!--/.nav-collapse -->
         {% endblock %}

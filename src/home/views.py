@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.http import HttpResponseNotFound
+from django.http import JsonResponse
 from home.models import Host_info, IP_Resource, Svn
 from django.contrib import messages
 from django.contrib.admin import widgets
@@ -243,22 +244,12 @@ def ipJson(request):
 
 @login_required()
 def svn_apply(request):
-    form = SvnForm
+    # form = SvnForm
     if request.method == 'GET':
-        return render(request, 'home/svn_apply.html', {'form': form})
+        return render(request, 'home/svn_apply.html')
     elif request.method == 'POST':
         proj_name_chinese = request.POST['proj_name_chinese']
         proj_name_english = request.POST['proj_name_english']
-        cname_prj = Svn.objects.filter(proj_name_chinese=proj_name_chinese)
-        ename_prj = Svn.objects.filter(proj_name_english=proj_name_english)
-        if cname_prj.exists():
-            messages.error(
-                request, """<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 项目中文名已存在。""")
-            return render(request, 'home/svn_apply.html', {'form': form})
-        elif ename_prj.exists():
-            messages.error(
-                request, """<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 项目英文名已存在。""")
-            return render(request, 'home/svn_apply.html', {'form': form})
         center = request.POST['center']
         pm = [User.objects.get(id=x).name for x in request.POST.getlist('pm')]
         tm = [User.objects.get(id=x).name for x in request.POST.getlist('tm')]
@@ -281,7 +272,42 @@ def svn_apply(request):
         send_svn_apply_mail.delay(svn, request.user)
         messages.success(request, """<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
   <strong>完成！</strong> 申请SVN成功，请等待实施人员开库。""")
-        return render(request, 'home/svn_apply.html', {'form': form})
+        return render(request, 'home/svn_apply.html')
+
+
+def svn_project_check(request):
+    d = {}
+    proj_name_english = request.GET.get('proj_name_english')
+    proj_name_chinese = request.GET.get('proj_name_chinese')
+    if proj_name_chinese:
+        chinese = Svn.objects.filter(proj_name_chinese=proj_name_chinese)
+        if chinese.exists():
+            d["valid"] = False
+        else:
+            d["valid"] = True
+        return JsonResponse(d)
+    elif proj_name_english:
+        english = Svn.objects.filter(proj_name_english=proj_name_english)
+        if english.exists():
+            d["valid"] = False
+        else:
+            d["valid"] = True
+        return JsonResponse(d)
+    else:
+        return JsonResponse({"valid": 'null'})
+
+
+def account(request):
+    term = request.GET.get('term')
+    page = request.GET.get('page') or 1
+    page = int(page)
+    users = User.objects.filter(email__icontains=term).values(
+        'id', 'name', 'email')
+    total_count = users.count()
+    filter_users = users[page * 10 - 10:page * 10]
+    s_users = json.dumps(list(filter_users), ensure_ascii=False)
+    d = {"total_count": total_count, "results": json.loads(s_users)}
+    return JsonResponse(d)
 
 
 def svn_list(request):
