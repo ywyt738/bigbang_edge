@@ -2,9 +2,17 @@
 
 {% load staticfiles %}
 
-{% load crispy_forms_tags %}
-
 {% block title %}{{ block.super }}SVN申请{% endblock %}
+
+{% block styles %}
+{{ block.super }}
+<!-- FormValidation CSS file -->
+<link rel="stylesheet" href="{% static 'formvalidation/css/formValidation.min.css'%}">
+<!-- select2 -->
+<link href="{% static 'select2/css/select2.min.css' %}" rel="stylesheet" />
+<!-- select2-bootstarp3-theme -->
+<link rel="stylesheet" href="{% static 'select2-bootstrap-theme/select2-bootstrap.min.css' %}">
+{% endblock styles %}
 
 {% block navbar-left %}
   {% include "_navbar.html" with active_link="svn" %}
@@ -16,7 +24,197 @@
     <h1>SVN申请</h1>
   </div>
   <div class="row">      
-    {% crispy form %}
+    <form id="myform" method="POST" class="form-horizontal">
+      {% csrf_token %}
+      <div id="project_name" class="form-group">
+        <label for="proj_name_chinese" class="col-md-1 control-label">项目名称</label>
+
+        <div class="col-md-5">
+          <input type="text" class="form-control" name="proj_name_chinese" placeholder="项目中文名" required="">
+        </div>
+  
+        <div class="col-md-6">
+          <input type="text" class="form-control" name="proj_name_english" placeholder="项目英文名" required="">
+        </div>
+      </div>
+      
+      <div id="pm" class="form-group">
+        <label for="pm" class="col-md-1 control-label">项目经理</label>
+
+        <div class="col-md-11">
+          <select class="form-control js-data-ajax" name="pm" multiple="multiple" required=""></select>
+        </div>
+      </div>
+
+      <div id="tm" class="form-group">
+        <label for="tm" class="col-md-1 control-label">技术经理</label>
+
+        <div class="col-md-11">
+          <select class="form-control js-data-ajax" name="tm" multiple="multiple" required=""></select>
+        </div>
+      </div>
+
+      <div id="dev" class="form-group">
+        <label for="dev" class="col-md-1 control-label">开发人员</label>
+      
+        <div class="col-md-11">
+          <select class="form-control js-data-ajax" name="dev" multiple="multiple" required=""></select>
+        </div>
+      </div>
+
+      <div id="test_manager" class="form-group">
+        <label for="test_manager" class="col-md-1 control-label">测试经理</label>
+      
+        <div class="col-md-11">
+          <select class="form-control js-data-ajax" name="test_manager" multiple="multiple" required=""></select>
+        </div>
+      </div>
+
+      <div id="test" class="form-group">
+        <label for="test" class="col-md-1 control-label">测试人员</label>
+      
+        <div class="col-md-11">
+          <select class="form-control js-data-ajax" name="test" multiple="multiple" required=""></select>
+        </div>
+      </div>
+
+      <div id="proj_property" class="form-group">
+        <label for="proj_property" class="col-md-1 control-label">项目性质</label>
+
+        <div  class="col-md-11">
+          <label class="radio-inline">
+            <input type="radio" name="proj_property" value="项目"> 项目
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="proj_property" value="产品"> 产品
+          </label>
+        </div>
+      </div>
+      
+      <div id="center" class="form-group">
+        <label for="center" class="col-md-1 control-label">中心</label>
+
+        <div class="col-md-11">
+          <label class="radio-inline">
+            <input type="radio" name="center" value="开发交付一中心"> 开发交付一中心
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="center" value="开发交付二中心"> 开发交付二中心
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="center" value="技术创新中心"> 技术创新中心
+          </label>
+          <label class="radio-inline">
+            <input type="radio" name="center" value="支撑拓展中心"> 支撑拓展中心
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-md-11 col-md-offset-1">
+          <button type="submit" class="btn btn-primary">提交</button>
+          <button type="reset" class="btn btn-warning">重置</button>
+        </div>
+      </div>
+    </form>
   </div>
 </div>
 {% endblock container %}
+{% block scripts %}
+<script src="{% static 'select2/js/select2.min.js' %}"></script>
+<script src="{% static 'select2/js/i18n/zh-CN.js' %}"></script>
+<script src="{% static 'formvalidation/js/formValidation.js' %}"></script>
+<script src="{% static 'formvalidation/js/framework/bootstrap.min.js' %}"></script>
+<script src="{% static 'formvalidation/js/language/zh_CN.js' %}"></script>
+<script>
+  $(document).ready(function () {
+    $('#myform').formValidation({
+      framework: 'bootstrap',
+      icon: {
+        valid: 'glyphicon glyphicon-ok',
+        invalid: 'glyphicon glyphicon-remove',
+        validating: 'glyphicon glyphicon-refresh'
+      },
+      locale: 'zh_CN',
+      fields: {
+        proj_name_chinese: {
+          validators: {
+            remote: {
+              url: '{% url "svn_check" %}',
+              type: 'GET',
+              delay: 1000,
+              message: '该项目中文名已被使用！',
+            }
+          }
+        },
+        proj_name_english: {
+          verbose: false,
+          validators: {
+            regexp: {
+              regexp: /^([a-z0-9\_\-]+)$/,
+              message: '合法的代码仓库名字为: A-Z, a-z, 0-9, 下划线(_), 连字符(-) 切忌空格!'
+            },
+            remote: {
+              url: '{% url "svn_check" %}',
+              type: 'GET',
+              delay: 1000,
+              message: '该项目英文名已被使用！',
+            },
+          }
+        },
+        proj_property: {
+          icon: false,
+          validators: {
+            notEmpty: {}
+          }
+        },
+        center: {
+          icon: false,
+          validators: {
+            notEmpty: {}
+          }
+        },
+      }
+    });
+  });
+</script>
+<script>
+$(document).ready(function () {
+  $('.js-data-ajax').select2({
+    language: "zh-CN",
+    theme: "bootstrap",
+    ajax: {
+      delay: 250,
+      url: '{% url "account" %}',
+      dataType: 'json',
+      data: function(params) {
+        return {
+          term: params.term,
+          page: params.page,
+        }
+      },
+      processResults: function(data, params) {
+        params.page = params.page || 1;
+        var tmp = $.map(data.results, function (obj) {
+          obj.text = obj.text || obj.name+" <"+obj.email+">"; // replace name with the property used for the text
+          return obj;
+        });
+        return {
+          results: tmp,
+          pagination: {
+            more: (params.page * 10) < data.total_count
+          },
+        };
+      },
+      cache: true,
+    },
+    placeholder: '选择人员',
+    minimumInputLength: 1,
+    templateSelection: formatRepoSelection,
+  });
+});
+function formatRepoSelection(repo) {
+  return repo.name;
+}
+</script>
+{% endblock scripts %}
