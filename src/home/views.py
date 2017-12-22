@@ -1,21 +1,22 @@
-from django.shortcuts import render, HttpResponse
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
-from django.http import HttpResponseNotFound
-from django.http import JsonResponse
-from home.models import Host_info, IP_Resource, Svn
-from django.contrib import messages
-from django.contrib.admin import widgets
-from django import forms
-from django.forms import Select
-from django.shortcuts import get_object_or_404
-from django.core import serializers
-from django.db.models import Q
 import json
 
-from home.forms import SvnForm
 from authtools.models import User
+from django import forms
+from django.contrib import messages
+from django.contrib.admin import widgets
+from django.contrib.auth.decorators import login_required
+from django.core import serializers
+from django.db.models import Q
+from django.forms import Select
+from django.http import (HttpResponseNotFound, HttpResponseRedirect,
+                         JsonResponse)
+from django.shortcuts import HttpResponse, get_object_or_404, render
+
+from home.forms import SvnForm
+from home.models import Host_info, IP_Resource, Svn
+
 from .tasks import send_svn_apply_mail
+
 
 @login_required()
 def index(request):
