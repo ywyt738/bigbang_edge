@@ -52,26 +52,34 @@ class Host_infoAdmin(admin.ModelAdmin):
                 sip.save()
                 obj.ip_address.available = False
                 obj.ip_address.save()
-            if 'deadline' not in form.changed_data:    
-                Mail.objects.filter(host=obj).delete()
+            if obj.is_permanent:
+                obj.deadline = None
         else:
             obj.ip_address.available = False
             obj.ip_address.save()
         super(Host_infoAdmin, self).save_model(request, obj, form, change)
         # 发送邮件生成
-        if change:   # 修改到期信息
+        if change:  # 修改到期信息
             if obj.is_permanent:
                 Mail.objects.filter(host=obj).delete()
-            if 'deadline' in form.changed_data:
+            elif 'deadline' in form.changed_data:
                 Mail.objects.filter(host=obj).delete()
                 Mail.objects.create(host=obj, send_date=obj.deadline)
-                Mail.objects.create(host=obj, send_date=obj.deadline - datetime.timedelta(days=3))
-                Mail.objects.create(host=obj, send_date=obj.deadline - datetime.timedelta(days=7))
-        else:    # 新增主机
+                Mail.objects.create(
+                    host=obj,
+                    send_date=obj.deadline - datetime.timedelta(days=3))
+                Mail.objects.create(
+                    host=obj,
+                    send_date=obj.deadline - datetime.timedelta(days=7))
+        else:  # 新增主机
             if not obj.is_permanent:
                 Mail.objects.create(host=obj, send_date=obj.deadline)
-                Mail.objects.create(host=obj, send_date=obj.deadline - datetime.timedelta(days=3))
-                Mail.objects.create(host=obj, send_date=obj.deadline - datetime.timedelta(days=7))
+                Mail.objects.create(
+                    host=obj,
+                    send_date=obj.deadline - datetime.timedelta(days=3))
+                Mail.objects.create(
+                    host=obj,
+                    send_date=obj.deadline - datetime.timedelta(days=7))
 
     def delete_model(self, request, obj):
         obj.ip_address.available = True
@@ -83,8 +91,7 @@ class Host_infoAdmin(admin.ModelAdmin):
             if request.resolver_match.args:
                 uuid = request.resolver_match.args[0]
                 kwargs["queryset"] = IP_Resource.objects.filter(
-                    Q(host_info__host_uuid=uuid) |
-                    Q(available=True))
+                    Q(host_info__host_uuid=uuid) | Q(available=True))
             else:
                 kwargs["queryset"] = IP_Resource.objects.filter(available=True)
         return super(Host_infoAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
