@@ -1,4 +1,6 @@
 import json
+import datetime
+import uuid
 
 from authtools.models import User
 from django import forms
@@ -12,32 +14,44 @@ from django.http import (HttpResponseNotFound, HttpResponseRedirect,
                          JsonResponse)
 from django.shortcuts import HttpResponse, get_object_or_404, render
 
-from home.forms import SvnForm
 from home.models import Host_info, IP_Resource, Svn
 
 from .tasks import send_svn_apply_mail
 
 
+class CJsonEncoder(json.JSONEncoder):
+    """自定义JSONEncoder，用来处理datetime和uuid对象"""
+    def default(self, obj):
+        if isinstance(obj, datetime.datetime):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(obj, datetime.date):
+            return obj.strftime('%Y-%m-%d')
+        elif isinstance(obj, uuid.UUID):
+            return str(obj)
+        else:
+            return json.JSONEncoder.default(self, obj)
+
+
 @login_required()
 def index(request):
-    list = [
-        (1001, 'Lorem ', 'ipsum ', 'dolor ', 'sit'),
-        (1002, 'amet ', 'consectetur ', 'adipiscing ', 'elit'),
-        (1003, 'Integer ', 'nec ', 'odio ', 'Praesent'),
-        (1003, 'libero ', 'Sed ', 'cursus ', 'ante'),
-        (1004, 'dapibus ', 'diam ', 'Sed ', 'nisi'),
-        (1005, 'Nulla ', 'quis ', 'sem ', 'at'),
-        (1006, 'nibh ', 'elementum ', 'imperdiet ', 'Duis'),
-        (1007, 'sagittis ', 'ipsum ', 'Praesent ', 'mauris'),
-        (1008, 'Fusce ', 'nec ', 'tellus ', 'sed'),
-        (1009, 'augue ', 'semper ', 'porta ', 'Mauris'),
-        (1010, 'massa ', 'Vestibulum ', 'lacinia ', 'arcu'),
-        (1011, 'eget ', 'nulla ', 'Class ', 'aptent'),
-        (1012, 'taciti ', 'sociosqu ', 'ad ', 'litora'),
-        (1013, 'torquent ', 'per ', 'conubia ', 'nostra'),
-        (1014, 'per ', 'inceptos ', 'himenaeos ', 'Curabitur'),
-        (1015, 'sodales ', 'ligula ', 'in ', 'libero')
-    ]
+    list = [(1001, 'Lorem ', 'ipsum ', 'dolor ',
+             'sit'), (1002, 'amet ', 'consectetur ', 'adipiscing ',
+                      'elit'), (1003, 'Integer ', 'nec ', 'odio ', 'Praesent'),
+            (1003, 'libero ', 'Sed ', 'cursus ',
+             'ante'), (1004, 'dapibus ', 'diam ', 'Sed ',
+                       'nisi'), (1005, 'Nulla ', 'quis ', 'sem ', 'at'),
+            (1006, 'nibh ', 'elementum ', 'imperdiet ',
+             'Duis'), (1007, 'sagittis ', 'ipsum ', 'Praesent ',
+                       'mauris'), (1008, 'Fusce ', 'nec ', 'tellus ', 'sed'),
+            (1009, 'augue ', 'semper ', 'porta ',
+             'Mauris'), (1010, 'massa ', 'Vestibulum ', 'lacinia ',
+                         'arcu'), (1011, 'eget ', 'nulla ', 'Class ',
+                                   'aptent'), (1012, 'taciti ', 'sociosqu ',
+                                               'ad ', 'litora'),
+            (1013, 'torquent ', 'per ', 'conubia ',
+             'nostra'), (1014, 'per ', 'inceptos ', 'himenaeos ',
+                         'Curabitur'), (1015, 'sodales ', 'ligula ', 'in ',
+                                        'libero')]
     list1 = {'1': 1, '2': 2, '3': 3, '4': 4}
     return render(request, 'home/index.html', {'list': list, 'list1': list1})
 
@@ -60,11 +74,9 @@ def hostsJson(request):
         keyword_result = Host_info.objects.all()
     else:
         keyword_result = Host_info.objects.filter(
-            Q(ip_address__ip_address__icontains=keyword) |
-            Q(description__icontains=keyword) |
-            Q(os__icontains=keyword) |
-            Q(maintainer__icontains=keyword)
-        )
+            Q(ip_address__ip_address__icontains=keyword) | Q(
+                description__icontains=keyword) | Q(os__icontains=keyword) | Q(
+                    maintainer__name__icontains=keyword))
     # 总共条目数量
     recordstotal = Host_info.objects.all().count()
     # 过滤后的条目数量
@@ -76,15 +88,20 @@ def hostsJson(request):
         paginator_result = order_result
     else:
         paginator_result = order_result[start:(start + length)]
-    # 序列化排序后的结果
-    serialize_result = serializers.serialize("json", paginator_result)
-    # 反序列化，为重组返回json用
-    result = json.loads(serialize_result)
+
+    add_name_q = paginator_result.values('pk', 'ip_address', 'description',
+                                         'os', 'maintainer__name', 'deadline')
+
+    tmp = json.dumps(list(add_name_q), ensure_ascii=False, cls=CJsonEncoder)
     # 组合返回json
-    data_before_serialize = {"draw": draw, "recordsTotal": recordstotal,
-                             "recordsFiltered": recordsfiltered, "data": result}
-    data = json.dumps(data_before_serialize)
-    return HttpResponse(data, content_type='application/json')
+    rdata = {
+        "draw": draw,
+        "recordsTotal": recordstotal,
+        "recordsFiltered": recordsfiltered,
+        "data": json.loads(tmp)
+    }
+    return JsonResponse(rdata)
+
 
 
 @login_required()
