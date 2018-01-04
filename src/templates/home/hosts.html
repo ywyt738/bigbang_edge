@@ -142,12 +142,12 @@
           return '<label><input type="checkbox" value="' + data + '"></label>';
         }
       },
-      { data: "fields.ip_address" },
-      { data: "fields.description" },
-      { data: "fields.os" },
-      { data: "fields.maintainer" },
+      { data: "ip_address" },
+      { data: "description" },
+      { data: "os" },
+      { data: "maintainer__name" },
       {
-        data: "fields.deadline",
+        data: "deadline",
         render: function (data, type, row, meta) {
           if (data == null) {
             return "永久";
@@ -180,10 +180,10 @@
     ],
     columnDefs: [
       { width: "1%", targets: 0 },
-      { name: "ip_address__bin_ip", width: "5%", targets: 1 },
+      { name: "ip_address", width: "5%", targets: 1 },
       { name: "description", width: "40%", targets: 2 },
       { name: "os", width: "10%", targets: 3 },
-      { name: "maintainer", width: "10%", targets: 4 },
+      { name: "maintainer__name", width: "10%", targets: 4 },
       { name: "deadline", width: "10%", targets: 5 },
       { width: "8%", targets: 6 },
     ],
