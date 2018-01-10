@@ -41,6 +41,9 @@ CACHES = {
 # ------------------------------------------------------------------------------
 MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware', ]
 INSTALLED_APPS += ['debug_toolbar', ]
+INSTALLED_APPS.insert(
+    INSTALLED_APPS.index('django.contrib.staticfiles'),
+    'whitenoise.runserver_nostatic')
 INTERNAL_IPS = ['127.0.0.1', ]
 DEBUG_TOOLBAR_CONFIG = {
     'DISABLE_PANELS': [
