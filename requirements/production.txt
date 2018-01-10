@@ -2,5 +2,5 @@
 
 # Extra stuff required for production like Prod Database interfacing packages
 # psycopg2
-
+gunicorn==19.7.1
 django-anymail[mailgun]==1.2
